@@ -19,11 +19,10 @@ class Solution:
         n = np.size(y)
         for epoch in range(epochs):
             y_hat = X @ w + b
-            L = np.sum((y_hat - y) ** 2) / n
+            error = y_hat - y
 
-            dL_w = 2 * X.T @ (y_hat - y) / n
-            # return (dL_w.shape, 0)
-            dL_b = 2 * np.sum(y_hat - y) / n
+            dL_w = 2 * X.T @ error / n
+            dL_b = 2 * np.sum(error) / n
             
             w -= lr * dL_w
             b -= lr * dL_b
