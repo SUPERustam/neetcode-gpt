@@ -15,7 +15,7 @@ class Solution:
         # out[::2] = np.sin((out[::2] // seq_len ) / (10000 ** (2 * (out[::2] % d_model) / d_model)))
         # out[1::2] = np.cos((out[1::2] // seq_len ) / (10000 ** (2 * (out[1::2] % d_model) / d_model)))
 
-        pos = np.arange(seq_len)[:, None]        
+        pos = np.arange(seq_len)[:, np.newaxis]        
         i = np.arange(0, d_model, 2)
         
         denom = 10000 ** (i / d_model)
