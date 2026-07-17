@@ -19,15 +19,22 @@ class Solution:
                 pair = (tokens[i - 1], tokens[i])
                 pair_dct[pair] = pair_dct.get(pair, 0) + 1
             
-            best_pair = ()
-            max_freq = 0
-            for i, j in pair_dct.items():
-                if max_freq < j:
-                    max_freq = j
-                    best_pair = i
-                elif max_freq == j:
-                    best_pair = min(best_pair, i)
+            if not pair_dct:
+                break
             
+            # best_pair = ()
+            # max_freq = 0
+            # for i, j in pair_dct.items():
+            #     if max_freq < j:
+            #         max_freq = j
+            #         best_pair = i
+            #     elif max_freq == j:
+            #         best_pair = min(best_pair, i)
+            
+            max_freq = max(pair_dct.values())
+            candidates = sorted(p for p, c in pair_dct.items() if c == max_freq)
+            best_pair = candidates[0]
+
 
             ans.append(best_pair)
             
