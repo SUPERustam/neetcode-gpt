@@ -1,24 +1,18 @@
 import torch
-import torch.nn as nn
-from torchtyping import TensorType
+from typing import List, Tuple
 
-class Solution(nn.Module):
-    def __init__(self, vocabulary_size: int):
-        super().__init__()
+class Solution:
+    def batch_loader(self, raw_dataset: str, context_length: int, batch_size: int) -> Tuple[List[List[str]], List[List[str]]]:
+        # 1. Tokenize by splitting on whitespace: raw_dataset.split()
+        # 2. Generate batch_size random start indices using torch.randint()
+        #    Range: [0, len(tokens) - context_length)
+        # 3. For each index i, X = tokens[i:i+context_length], Y = tokens[i+1:i+1+context_length]
         torch.manual_seed(0)
-        # Layers: Embedding(vocabulary_size, 16) -> Linear(16, 1) -> Sigmoid
-        self.emb = nn.Embedding(vocabulary_size, 16)
-        self.fc = nn.Linear(16, 1)
-        self.act = nn.Sigmoid()
-
-    def forward(self, x: TensorType[int]) -> TensorType[float]:
-        # Hint: The embedding layer outputs a B, T, embed_dim tensor
-        # but you should average it into a B, embed_dim tensor before using the Linear layer
-
-        # Return a B, 1 tensor and round to 4 decimal places    
-        x = torch.tensor(x)
-        x = self.emb(x)
-        x = torch.mean(x, dim=1)
-        x = self.fc(x)
-        x = self.act(x)
-        return torch.round(x, decimals=4)
+        dataset = raw_dataset.split()
+        starts = torch.randint(len(dataset) - context_length, (batch_size, ))
+        x = []
+        y = []
+        for i in range(batch_size):
+            x.append(dataset[starts[i]:starts[i] + context_length])
+            y.append(dataset[starts[i] + 1:starts[i] + context_length + 1])
+        return x, y
