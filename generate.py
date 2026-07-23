@@ -18,13 +18,16 @@ class Solution:
 
             # YOUR CODE (arbitrary number of lines)
             # The line where you call torch.multinomial(). Pass in the generator as well.
-            logits = model(context[:, -context_length:])
-            probs = torch.softmax(logits, dim=-1)
-            next_token = torch.multinomial(probs[0, :, :], num_samples=1, generator=generator, replacement=True)
-            context = torch.cat((context, next_token), 0)
+            if context.shape[1] > context_length:
+                context = context[:, -context_length:]
+
+            logits = model(context)
+            probs = torch.softmax(logits[:, -1, :], dim=-1)
+            next_token = torch.multinomial(probs, num_samples=1, generator=generator, replacement=True)
             
             generator.set_state(initial_state)
-            result.append(int_to_char[next_token[0].item()])
+            context = torch.cat((context, next_token), -1)
+            result.append(int_to_char[next_token.item()])
             # MORE OF YOUR CODE (arbitrary number of lines)
 
         # Once your code passes the test, check out the Colab link to see your code generate new Drake lyrics!
